@@ -1,0 +1,23 @@
+---
+title: "Combining Multiple Files into a Single data.frame"
+output:
+  html_document:
+    theme: cerulean
+    df_print: paged
+---
+
+```{r}
+files <- list.files("data", "csv$", full.names = TRUE)
+head(files, 3L)
+readLines(files[1L], n = 3L)
+```
+
+```{r}
+list_dfs <- lapply(files, function(file) {
+  df <- read.csv(file, stringsAsFactors = FALSE)
+  df$name <- gsub("_data.csv", "", basename(file))
+  df
+})
+data <- do.call(rbind, list_dfs)
+data[sample(1:nrow(data), 3L), ]
+```
